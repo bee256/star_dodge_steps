@@ -10,10 +10,10 @@ info_display = pygame.display.Info()
 SCREEN_W = info_display.current_w
 SCREEN_H = info_display.current_h
 print(f"Screen width: {SCREEN_W}, height: {SCREEN_H}")
-PLAYER_WIDTH = SCREEN_W / 50
-PLAYER_HEIGHT = PLAYER_WIDTH * 1.5
-PLAYER_VEL = PLAYER_WIDTH / 8
-print(f"Player width: {PLAYER_WIDTH}, height: {PLAYER_HEIGHT}, velocity: {PLAYER_VEL}")
+SHIP_WIDTH = SCREEN_W / 50
+SHIP_HEIGHT = SHIP_WIDTH * 1.5
+SHIP_VEL = SHIP_WIDTH / 8
+print(f"Player width: {SHIP_WIDTH}, height: {SHIP_HEIGHT}, velocity: {SHIP_VEL}")
 STAR_W = int(SCREEN_W / 150)
 STAR_H = int(SCREEN_H / 70)
 STAR_VEL = 8
@@ -25,14 +25,14 @@ BG_IMG = pygame.image.load('background.jpeg')
 BG_IMG_SCALED = pygame.transform.scale(BG_IMG, (SCREEN_W, SCREEN_H))
 
 
-def draw(player, elapsed_time, stars):
+def draw(ship, elapsed_time, stars):
     WIN.blit(BG_IMG_SCALED, (0, 0))
 
     # time_text = FONT.render(f"Time: {elapsed_time} sec", 1, "white")
     time_text = FONT.render(f"Time: {round(elapsed_time)} sec", 1, "white")
     WIN.blit(time_text, (10, 10))
 
-    pygame.draw.rect(WIN, "red", player)
+    pygame.draw.rect(WIN, "red", ship)
 
     for star in stars:
         pygame.draw.rect(WIN, "white", star)
@@ -42,7 +42,7 @@ def draw(player, elapsed_time, stars):
 
 # Main Program
 run = True
-ship = pygame.Rect(SCREEN_W / 2, SCREEN_H - PLAYER_HEIGHT * 2, PLAYER_WIDTH, PLAYER_HEIGHT)
+ship = pygame.Rect(SCREEN_W / 2, SCREEN_H - SHIP_HEIGHT * 2, SHIP_WIDTH, SHIP_HEIGHT)
 clock = pygame.time.Clock()
 start_time = time.time()
 elapsed_time = 0
@@ -74,10 +74,10 @@ while run:
             break
 
     keys = pygame.key.get_pressed()
-    if keys[pygame.K_LEFT] and ship.x - PLAYER_VEL >= 0:
-        ship.x -= PLAYER_VEL
-    if keys[pygame.K_RIGHT] and ship.x + PLAYER_VEL + ship.width <= SCREEN_W:
-        ship.x += PLAYER_VEL
+    if keys[pygame.K_LEFT] and ship.x - SHIP_VEL >= 0:
+        ship.x -= SHIP_VEL
+    if keys[pygame.K_RIGHT] and ship.x + SHIP_VEL + ship.width <= SCREEN_W:
+        ship.x += SHIP_VEL
     if keys[pygame.K_ESCAPE]:
         break
 
