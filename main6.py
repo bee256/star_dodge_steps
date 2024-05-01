@@ -25,7 +25,7 @@ BG_IMG = pygame.image.load('background.jpeg')
 BG_IMG_SCALED = pygame.transform.scale(BG_IMG, (SCREEN_W, SCREEN_H))
 
 
-def draw(ship, elapsed_time, stars):
+def draw():
     WIN.blit(BG_IMG_SCALED, (0, 0))
 
     # time_text = FONT.render(f"Time: {elapsed_time} sec", 1, "white")
@@ -92,13 +92,13 @@ while run:
                 break
 
     if is_hit:
-        lost_text = FONT.render("Das Raumschiff ist konkret im Arsch!", 1, "red")
+        lost_text = FONT.render("Das Raumschiff ist konkret defekt!", 1, "red")
         # WIN.blit(lost_text, (SCREEN_W/2, SCREEN_H/2))
         WIN.blit(lost_text, (SCREEN_W/2 - lost_text.get_width()/2, SCREEN_H/2 - lost_text.get_height()/2))
         pygame.display.update()
         pygame.time.delay(3000)
         break
 
-    draw(ship, elapsed_time, stars)
+    draw()
 
 pygame.quit()

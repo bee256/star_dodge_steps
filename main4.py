@@ -21,7 +21,7 @@ BG_IMG = pygame.image.load('background.jpeg')
 BG_IMG_SCALED = pygame.transform.scale(BG_IMG, (SCREEN_W, SCREEN_H))
 
 
-def draw(ship, elapsed_time):
+def draw():
     WIN.blit(BG_IMG_SCALED, (0, 0))
 
     # time_text = FONT.render(f"Time: {elapsed_time} sec", 1, "white")
@@ -55,6 +55,6 @@ while run:
     if keys[pygame.K_ESCAPE]:
         break
 
-    draw(ship, elapsed_time)
+    draw()
 
 pygame.quit()

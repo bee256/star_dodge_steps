@@ -3,8 +3,8 @@
 
 import pygame
 
-# WIN = pygame.display.set_mode((1200, 800))
-WIN = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
+WIN = pygame.display.set_mode((1200, 800))
+# WIN = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
 info_display = pygame.display.Info()
 SCREEN_W = info_display.current_w
 SCREEN_H = info_display.current_h
@@ -18,16 +18,21 @@ BG_IMG = pygame.image.load('background.jpeg')
 BG_IMG_SCALED = pygame.transform.scale(BG_IMG, (SCREEN_W, SCREEN_H))
 
 
-def draw(ship):
+# Die erste selbst definierte Funktion draw(). Sie wird nach dem die Logik des Spiels abgearbeitet ist aufgerufen
+# um den kompletten Bildschirm neu zu zeichnen.
+def draw():
     WIN.blit(BG_IMG_SCALED, (0, 0))
     pygame.draw.rect(WIN, "red", ship)
     pygame.display.update()
 
 
+clock = pygame.time.Clock()
 run = True
 ship = pygame.Rect(SCREEN_W / 2, SCREEN_H - SHIP_HEIGHT * 2, SHIP_WIDTH, SHIP_HEIGHT)
 
 while run:
+    clock.tick(60)
+
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             run = False
@@ -38,9 +43,10 @@ while run:
         ship.x -= SHIP_VEL
     if keys[pygame.K_RIGHT] and ship.x + SHIP_VEL + ship.width <= SCREEN_W:
         ship.x += SHIP_VEL
+    # Mit der Escape Taste kann das Spiel jetzt auch beendet werden
     if keys[pygame.K_ESCAPE]:
         break
 
-    draw(ship)
+    draw()
 
 pygame.quit()
