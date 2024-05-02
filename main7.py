@@ -68,7 +68,7 @@ while run:
     time_since_last_frame = clock.tick(60)
     star_create_timer += time_since_last_frame
     elapsed_time = time.time() - start_time
-    # print(f"Time since last frame: {time_since_last_frame}, Star timer: {star_create_timer}")
+    # print(f"Time since last frame: {time_since_last_frame}, Star timer: {star_create_timer}, Frame rate: {clock.get_fps():.2f}")
 
     if star_create_timer > star_add_increment:
         for _ in range(3):
