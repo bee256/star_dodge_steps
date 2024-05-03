@@ -60,8 +60,8 @@ class Ship:
 
     Methods:
         draw(): draw on screen
-        move_left(): move the ship to the left (will not move off screen)
-        move_right(): move the ship to the right (will not move off screen)
+        move_left(): move the ship to the left (will not move off-screen)
+        move_right(): move the ship to the right (will not move off-screen)
     """
 
     def __init__(self, screen: pg.Surface):

@@ -1,5 +1,5 @@
-# Schritt 15: Leben einbauen (Hits). Raumschiff wird in Abhängigkeit der Hits unterschiedlich eingefärbt.
-#             Nach 3 Hits ist das Spiel zu Ende.
+# Schritt 16: Umstellung der Sterne auf die Klasse Star. Sterne sind jetzt unterschiedlich gefärbt und unterschiedlich schnell.
+#             Die minimale und maximale Geschwindigkeit der Sterne wird jetzt in Abhängigkeit der vertikalen Grösse des Bildschirms berechnet.
 import random
 import time
 import pygame as pg
@@ -7,8 +7,8 @@ from os import path
 
 pg.init()
 pg.font.init()
-WIN = pg.display.set_mode((1200, 800))
-# WIN = pg.display.set_mode((0, 0), pg.FULLSCREEN)
+# WIN = pg.display.set_mode((1200, 800))
+WIN = pg.display.set_mode((0, 0), pg.FULLSCREEN)
 info_display = pg.display.Info()
 SCREEN_W = info_display.current_w
 SCREEN_H = info_display.current_h
@@ -17,8 +17,9 @@ STAR_W = int(SCREEN_W / 150)
 STAR_H = int(SCREEN_H / 70)
 STAR_MASK = pg.mask.Mask((STAR_W, STAR_H))
 STAR_MASK.fill()
-STAR_VEL = 8
-print(f"Star width: {STAR_W}, height: {STAR_H}, velocity: {STAR_VEL}")
+STAR_VEL_MAX = round(SCREEN_H / 144)
+STAR_VEL_MIN = round(SCREEN_H / 288)
+print(f"Star width: {STAR_W}, height: {STAR_H}, velocity min/max: {STAR_VEL_MIN}/{STAR_VEL_MAX}")
 
 FONT_SIZE_BASE = int(SCREEN_W / 40)
 TIME_FONT = pg.font.Font(path.join('assets', 'fonts', 'StarJedi-DGRW.ttf'), FONT_SIZE_BASE)
@@ -28,6 +29,30 @@ SOUND_HIT = pg.mixer.Sound(path.join('assets', 'sound', 'metal_trash_can_filled_
 pg.mixer.music.load(path.join('assets', 'sound', 'planetary_paths.mp3'), 'planet_paths')
 BG_IMG = pg.image.load(path.join('assets', 'images', 'background.jpeg'))
 BG_IMG_SCALED = pg.transform.scale(BG_IMG, (SCREEN_W, SCREEN_H))
+
+BLACK = (0, 0, 0)
+WHITE = (255, 255, 255)
+RED = (255, 0, 0)
+GREEN = (0, 255, 0)
+BLUE = (0, 0, 255)
+
+# Additional Colors
+YELLOW = (255, 255, 0)
+CYAN = (0, 255, 255)
+MAGENTA = (255, 0, 255)
+LIGHT_BLUE = (0, 160, 255)
+
+# Gray Shades
+GRAY = (128, 128, 128)
+LIGHT_GRAY = (192, 192, 192)
+DARK_GRAY = (64, 64, 64)
+
+# Custom Colors
+ORANGE = (255, 165, 0)
+PURPLE = (128, 0, 128)
+PINK = (255, 182, 193)
+
+STAR_COLOR_PALETTE = (WHITE, RED, GREEN, BLUE, YELLOW, CYAN, MAGENTA, LIGHT_BLUE, LIGHT_GRAY, ORANGE, PURPLE, PINK)
 
 
 def draw():
@@ -49,7 +74,7 @@ def draw():
     ship.draw(color)
 
     for star in stars:
-        pg.draw.rect(WIN, "white", star)
+        star.draw()
 
     hits_text = TIME_FONT.render(f"Hits: {hits}", 1, color)
     WIN.blit(hits_text, (SCREEN_W - hits_text.get_width() - 30, 10))
@@ -128,6 +153,52 @@ class Ship:
             self.x += self.__velocity
 
 
+class Star:
+    """
+    This class implements stars as rectangles with a random color from a color palette and moves them with a
+    random velocity.
+
+    Attributes:
+        star_rect (pygame.Rect): the rectangle which is drawn on screen
+        color: a randomly chosen color from a color palette
+        velocity: a random chosen velocity from a certain range
+
+    Methods:
+        draw(): draw on screen
+        move(): move the star vertically down the screen according to the velocity
+        is_off_screen(): determines if the star has been moved outside the visible area of the screen
+        is_near_ship(): determines if the star is close to the y coordinates of the ship
+        collides_with_ship(): determines if the star collides with the ship
+    """
+
+    def __init__(self):
+        star_x = random.randint(0, SCREEN_W - STAR_W)
+        self.star_rect = pg.Rect(star_x, -STAR_H, STAR_W, STAR_H)
+        self.color = STAR_COLOR_PALETTE[random.randint(0, len(STAR_COLOR_PALETTE) - 1)]
+        self.velocity = random.randint(STAR_VEL_MIN, STAR_VEL_MAX)
+
+    def draw(self):
+        pg.draw.rect(WIN, self.color, self.star_rect)
+
+    def move(self):
+        self.star_rect.y += self.velocity
+
+    def is_off_screen(self):
+        if self.star_rect.y > SCREEN_H:
+            return True
+        return False
+
+    def is_near_ship(self, ship):
+        if self.star_rect.y + self.star_rect.height >= ship.y:
+            return True
+        return False
+
+    def collides_with_ship(self, ship):
+        if ship.mask.overlap(STAR_MASK, (self.star_rect.x - ship.x, self.star_rect.y - ship.y)):
+            return True
+        return False
+
+
 # Main Program
 run = True
 ship = Ship(WIN)
@@ -153,8 +224,7 @@ while run:
 
     if star_create_timer > star_add_increment:
         for _ in range(3):
-            star_x = random.randint(0, SCREEN_W - STAR_W)
-            star = pg.Rect(star_x, -STAR_H, STAR_W, STAR_H)
+            star = Star()
             stars.append(star)
 
         star_add_increment = max(150, star_add_increment - 50)
@@ -174,11 +244,11 @@ while run:
         break
 
     for star in stars.copy():
-        star.y += STAR_VEL
-        if star.y > SCREEN_H:
+        star.move()
+        if star.is_off_screen():
             stars.remove(star)
-        elif star.y + star.height >= ship.y:        # nachschauen, ob die Unterkante des Sterns in Höhe des Schiffes ist
-            if ship.mask.overlap(STAR_MASK, (star.x - ship.x, star.y - ship.y)):      # berühren sich Stern und Schiff?
+        elif star.is_near_ship(ship):
+            if star.collides_with_ship(ship):
                 stars.remove(star)
                 is_hit = True
                 break
