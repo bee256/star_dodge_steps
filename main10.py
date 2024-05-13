@@ -58,8 +58,8 @@ STAR_COLOR_PALETTE = (WHITE, RED, GREEN, BLUE, YELLOW, CYAN, MAGENTA, LIGHT_BLUE
 def draw():
     WIN.blit(BG_IMG_SCALED, (0, 0))
 
-    minutes = int(elapsed_time // 60)
-    seconds = int(elapsed_time % 60)
+    minutes = int(elapsed_time) // 60
+    seconds = int(elapsed_time) % 60
     time_text = TIME_FONT.render(f"Time: {minutes:02d}:{seconds:02d}", 1, pg.Color(0, 160, 255))
     WIN.blit(time_text, (30, 10))
 
