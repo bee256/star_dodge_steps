@@ -45,6 +45,7 @@ run = True
 ship = pygame.Rect(SCREEN_W / 2, SCREEN_H - SHIP_HEIGHT * 2, SHIP_WIDTH, SHIP_HEIGHT)
 clock = pygame.time.Clock()
 start_time = time.time()
+print(f"Hier ist die Zeit beim Start des Programms: {start_time}")
 elapsed_time = 0
 
 # Sterne
@@ -59,6 +60,7 @@ while run:
     # print(f"Time since last frame: {time_since_last_frame}, Star timer: {star_create_timer}, Frame rate: {clock.get_fps():.2f}")
 
     if star_create_timer > star_add_increment:
+        print(f"Jetzt ist Zeit zum Sterne erzeugen: create time {star_create_timer} ms ist grösser als add_increment {star_add_increment}")
         for _ in range(3):
             star_x = random.randint(0, SCREEN_W - STAR_W)
             star = pygame.Rect(star_x, -STAR_H, STAR_W, STAR_H)
@@ -87,8 +89,8 @@ while run:
         elif star.y + star.height >= ship.y:        # nachschauen, ob die Unterkante des Sterns in Höhe des Schiffes ist
             if star.colliderect(ship):              # berühren sich Stern und Schiff?
                 stars.remove(star)
-                break
 
+    print(f"Anzahl Sterne im Array: {len(stars)}")
     draw()
 
 pygame.quit()

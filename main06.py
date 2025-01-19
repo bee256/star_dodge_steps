@@ -4,8 +4,8 @@ import time
 import pygame
 
 pygame.font.init()
-WIN = pygame.display.set_mode((1200, 800))
-# WIN = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
+# WIN = pygame.display.set_mode((1200, 800))
+WIN = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
 info_display = pygame.display.Info()
 SCREEN_W = info_display.current_w
 SCREEN_H = info_display.current_h
@@ -20,7 +20,7 @@ STAR_VEL = 8
 print(f"Star width: {STAR_W}, height: {STAR_H}, velocity: {STAR_VEL}")
 
 
-FONT = pygame.font.SysFont("comicsans", 40)
+FONT = pygame.font.SysFont("comicsans", 100)
 BG_IMG = pygame.image.load('background.jpeg')
 BG_IMG_SCALED = pygame.transform.scale(BG_IMG, (SCREEN_W, SCREEN_H))
 
@@ -95,8 +95,9 @@ while run:
         lost_text = FONT.render("Das Raumschiff ist konkret defekt!", 1, "red")
         # WIN.blit(lost_text, (SCREEN_W/2, SCREEN_H/2))
         WIN.blit(lost_text, (SCREEN_W/2 - lost_text.get_width()/2, SCREEN_H/2 - lost_text.get_height()/2))
+
         pygame.display.update()
-        pygame.time.delay(3000)
+        pygame.time.delay(20000)
         break
 
     draw()
